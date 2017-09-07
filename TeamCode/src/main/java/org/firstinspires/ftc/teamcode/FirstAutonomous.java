@@ -32,15 +32,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -58,10 +53,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="7128 First Auto", group="Autonomous")
 
-public class TemplateAutonomous extends LinearOpMode {
+public class FirstAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
+    DcMotor leftMotor;
+    DcMotor rightMotor;
+
+    ColorSensor colorSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -72,6 +71,9 @@ public class TemplateAutonomous extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
+        leftMotor  = hardwareMap.dcMotor.get("leftmotor");
+        rightMotor = hardwareMap.dcMotor.get("rightmotor");
+        colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
 
         // eg: Set the drive motor directions:
@@ -88,10 +90,40 @@ public class TemplateAutonomous extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
+            leftMotor.setPower(0.5);
+            rightMotor.setPower(0.5);
+
+            wait(3);
+
+            leftMotor.setPower(0.5);
+            rightMotor.setPower(-0.5);
+
+            wait(0.75);
+
+            leftMotor.setPower(0.5);
+            rightMotor.setPower(0.5);
+
+            wait(1);
+
+            while (colorSensor.red() > 50) {
+                leftMotor.setPower(-0.5);
+                rightMotor.setPower(0.5);
+            }
+
+            leftMotor.setPower(0);
+            rightMotor.setPower(0);
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
             // rightMotor.setPower(-gamepad1.right_stick_y);
         }
+    }
+
+    private void wait(double t) {
+        double time = this.time;
+        while(this.time - time < t && opModeIsActive()) {
+
+        }
+
     }
 }
