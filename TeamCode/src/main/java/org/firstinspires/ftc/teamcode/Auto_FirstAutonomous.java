@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="7128 First Auto", group="Autonomous")
 
-public class FirstAutonomous extends LinearOpMode {
+public class Auto_FirstAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
