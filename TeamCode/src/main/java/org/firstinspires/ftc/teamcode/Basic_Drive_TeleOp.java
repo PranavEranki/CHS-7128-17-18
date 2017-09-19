@@ -87,7 +87,7 @@ public class Basic_Drive_TeleOp extends LinearOpMode {
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             leftMotor.setPower(gamepad1.left_stick_y);
             rightMotor.setPower(gamepad1.left_stick_y);
-            if(true){
+            if(false){
                 //
             }
         }
