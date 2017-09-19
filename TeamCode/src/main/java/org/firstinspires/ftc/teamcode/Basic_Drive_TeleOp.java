@@ -32,11 +32,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -53,7 +51,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="Super Basic Tele-Op", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-public class Super_Basic_TeleOp extends LinearOpMode {
+public class Basic_Drive_TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -74,8 +72,8 @@ public class Super_Basic_TeleOp extends LinearOpMode {
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
-        leftMotor.setDirection(DcMotor.Direction.FORWARD);  // Set to REVERSE if using AndyMark motors
-        rightMotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
+        //leftMotor.setDirection(DcMotor.Direction.FORWARD);  // Set to REVERSE if using AndyMark motors
+        //rightMotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -87,8 +85,11 @@ public class Super_Basic_TeleOp extends LinearOpMode {
             telemetry.update();
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            //leftMotor.setPower(-gamepad1.left_stick_y);
-            //rightMotor.setPower(-gamepad1.right_stick_y);
+            leftMotor.setPower(gamepad1.left_stick_y);
+            rightMotor.setPower(gamepad1.left_stick_y);
+            if(true){
+                //
+            }
         }
     }
 }
