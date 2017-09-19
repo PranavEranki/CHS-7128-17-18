@@ -57,8 +57,8 @@ public class Super_Basic_TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    DcMotor leftMotor = null;
-    DcMotor rightMotor = null;
+    private DcMotor leftMotor = null;
+    private DcMotor rightMotor = null;
 
     @Override
     public void runOpMode() {
@@ -87,8 +87,8 @@ public class Super_Basic_TeleOp extends LinearOpMode {
             telemetry.update();
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            leftMotor.setPower(-gamepad1.left_stick_y);
-            rightMotor.setPower(-gamepad1.right_stick_y);
+            //leftMotor.setPower(-gamepad1.left_stick_y);
+            //rightMotor.setPower(-gamepad1.right_stick_y);
         }
     }
 }
