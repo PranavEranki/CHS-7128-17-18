@@ -56,8 +56,8 @@ public class Super_Basic_TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftMotor = null;
-    private DcMotor rightMotor = null;
+    DcMotor leftMotor = null;
+    DcMotor rightMotor = null;
 
     @Override
     public void runOpMode() {
@@ -68,8 +68,8 @@ public class Super_Basic_TeleOp extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        leftMotor  = hardwareMap.dcMotor.get("left_drive");
-        rightMotor = hardwareMap.dcMotor.get("right_drive");
+        //leftMotor  = hardwareMap.dcMotor.get("left_drive");
+        //rightMotor = hardwareMap.dcMotor.get("right_drive");
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
