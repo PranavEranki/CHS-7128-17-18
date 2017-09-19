@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Super Basic Tele-Op", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="Basic Drive Tele-Op", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 public class Basic_Drive_TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
