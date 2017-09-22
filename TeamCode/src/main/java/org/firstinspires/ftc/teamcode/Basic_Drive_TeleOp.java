@@ -54,11 +54,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Basic_Drive_TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public ElapsedTime runtime = new ElapsedTime();
-    public DcMotor leftMotor = null;
-    public DcMotor rightMotor = null;
-    public double x = gamepad1.left_stick_x;
-    public double y = gamepad1.left_stick_y;
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor leftMotor = null;
+    private DcMotor rightMotor = null;
+    private double x = gamepad1.left_stick_x;
+    private double y = gamepad1.left_stick_y;
 
     @Override
     public void runOpMode() {
@@ -84,8 +84,8 @@ public class Basic_Drive_TeleOp extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double x = gamepad1.left_stick_x;
-            double y = gamepad1.left_stick_y;
+            x = gamepad1.left_stick_x;
+            y = gamepad1.left_stick_y;
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("x = " + x, "y = " + y);
             telemetry.update();
