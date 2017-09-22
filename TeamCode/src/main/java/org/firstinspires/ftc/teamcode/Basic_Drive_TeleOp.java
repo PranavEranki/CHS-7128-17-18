@@ -54,11 +54,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Basic_Drive_TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftMotor = null;
-    private DcMotor rightMotor = null;
-    private double x = gamepad1.left_stick_x;
-    private double y = gamepad1.left_stick_y;
+    public ElapsedTime runtime = new ElapsedTime();
+    public DcMotor leftMotor = null;
+    public DcMotor rightMotor = null;
+    public double x = gamepad1.left_stick_x;
+    public double y = gamepad1.left_stick_y;
 
     @Override
     public void runOpMode() {
@@ -93,7 +93,7 @@ public class Basic_Drive_TeleOp extends LinearOpMode {
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             leftMotor.setPower(gamepad1.left_stick_y);
             rightMotor.setPower(gamepad1.left_stick_y);
-            if(x > 0){
+            if(x > 0) {
                 leftMotor.setPower(x);
             }else{
                 rightMotor.setPower(x);
