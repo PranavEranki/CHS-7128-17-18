@@ -105,9 +105,23 @@ public class Basic_TankDrive_TeleOp extends LinearOpMode {
             //set speed
             if(gamepad1.left_bumper){
                 speed -= .1;
-            }else if(gamepad1.right_bumper){
+                wait(.5);
+                if(speed < -1){
+                    speed = -1;
+                }
+            }else if(gamepad1.right_bumper) {
                 speed += .1;
+                wait(.5);
+                if (speed > 1) {
+                    speed = 1;
+                }
             }
+        }
+    }
+    public void wait(double seconds){
+        double time = this.time;
+        while(this.time - time < seconds){
+            //does nothing, purpose is to wait a certain amount of seconds
         }
     }
 }
