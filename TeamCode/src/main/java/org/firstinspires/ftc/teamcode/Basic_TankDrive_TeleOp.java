@@ -108,8 +108,8 @@ public class Basic_TankDrive_TeleOp extends LinearOpMode {
             if(gamepad1.left_bumper){
                 speed -= .1;
                 wait(.5);
-                if(speed < -1){
-                    speed = -1;
+                if(speed < .1){
+                    speed = .1;
                 }
             }else if(gamepad1.right_bumper) {
                 speed += .1;
