@@ -59,7 +59,8 @@ public class Basic_TankDrive_TeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftMotor = null;
     private DcMotor rightMotor = null;
-    private double y = 0.;
+    private double y1 = 0.;
+    private double y2 = 0.;
     private double speed = .5;
 
     @Override
@@ -85,17 +86,18 @@ public class Basic_TankDrive_TeleOp extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            y = gamepad1.left_stick_y;
+            y1 = gamepad1.left_stick_y;
+            y2 = gamepad1.right_stick_y;
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("rightMotor: " + gamepad1.right_stick_y, "leftMotor: " + gamepad1.left_stick_y);
+            telemetry.addData("rightMotor: " + y2, "leftMotor: " + y1);
             telemetry.addData("speed: ", speed);
             telemetry.update();
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
 
             //forward movement
-            leftMotor.setPower(-gamepad1.left_stick_y * speed);
-            rightMotor.setPower(-gamepad1.right_stick_y * speed);
+            leftMotor.setPower(-y1 * speed);
+            rightMotor.setPower(-y2 * speed);
 
             if(gamepad1.b){
                 leftMotor.setPower(0);
