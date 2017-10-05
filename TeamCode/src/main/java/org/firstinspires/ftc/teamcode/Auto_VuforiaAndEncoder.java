@@ -159,7 +159,7 @@ public class Auto_VuforiaAndEncoder extends LinearOpMode {
             int targetPosition = (int) (12 * COUNTS_PER_INCH);
 
 
-
+            String vuMarkSeen = " not visible";
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
@@ -172,15 +172,18 @@ public class Auto_VuforiaAndEncoder extends LinearOpMode {
             }
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 movement((int) (24 * COUNTS_PER_INCH));
+                vuMarkSeen = " Left";
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 movement((int) (48* COUNTS_PER_INCH));
+                vuMarkSeen = " Center";
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 movement((int) (72 * COUNTS_PER_INCH));
+                vuMarkSeen = " Right";
             }
             else {
-                telemetry.addData("VuMark", "not visible");
+                telemetry.addData("VuMark", vuMark);
             }
 
             telemetry.update();
