@@ -47,8 +47,8 @@ public class Auto_VuforiaAndEncoder extends LinearOpMode {
     DcMotor rightMotor;
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 1 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 3.6 ;     // For figuring circumference
+    static final double     DRIVE_GEAR_REDUCTION    = 0.8 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 3.54331 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     //public static final String TAG = "Vuforia VuMark Sample";
@@ -111,7 +111,7 @@ public class Auto_VuforiaAndEncoder extends LinearOpMode {
          * Once you've obtained a license key, copy the string from the Vuforia web site
          * and paste it in to your code onthe next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = "AWnZ5xz/////AAAAGYmbM16TXEdKscTtfaECY6FzIRnxfc6SV0uwUV+dwPVIWbGyu9567BTp2qzh6ohnawdFrbL290ECRr04ew/QX0Q90SUrGh52+s55yVFPN429A93YJm6AlnV/TEJKb8omxdlqC+Hfy0SLPZSu+UEq9xQMOIfeW+OiRNQyFlUTZNCtQDNuK5jwObgulF83zrexs+c95Cd1jU7PnoX+NgHPjmUWS5H+WVr4yZsewES+oa0jRjGrcGU0/P5USRnqVbKh4976SNjPBGy6fanxJZmQb2Pam56UROtERcdaPDSWg4Nrr0MFlHCvi3PcfyLfdPtBW06JZGWBXu23VJCBQFw3SxGm/IO057P4kbTFti3W5xkU";
+        parameters.vuforiaLicenseKey = "AZHAQRH/////AAAAGQ6K1+aY90TlgdxPiNC5zmmAVabLoenLsZ227ubCjDrC6b3cQtOUwnrB3ZNQWwDB6eHbzv8w67EJBp6R2AyPHf5X0gErSGY5HH4PR+IX4Ls2HTgft7F3A8SAUII/q7A70faLEz2U/seCvob/m53IwouLLa86D6WaMOdNi0lziagI1gS/cANAHhhb3fesRCKYxJvMONUyfMf6FXva4Mt7FIr6yy7qfY7bbkkcYMRSN9yPgHsdN6SxXkmKEZUs86sjl7yEYgefFyogwtbPOIvEvhn+8qh1HuliFc0b2mGhakbaXqYgzTpSmqTppmetn1LyK8U1zDnwaO5xftJ/ea6iKGhZQ6AIA3SM2kb57O/Za5za";
 
         /*
          * We also indicate which camera on the RC that we wish to use.
@@ -156,10 +156,6 @@ public class Auto_VuforiaAndEncoder extends LinearOpMode {
              * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
-            int targetPosition = (int) (12 * COUNTS_PER_INCH);
-
-
-            String vuMarkSeen = " not visible";
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
@@ -172,15 +168,12 @@ public class Auto_VuforiaAndEncoder extends LinearOpMode {
             }
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 movement((int) (24 * COUNTS_PER_INCH));
-                vuMarkSeen = " Left";
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 movement((int) (48* COUNTS_PER_INCH));
-                vuMarkSeen = " Center";
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 movement((int) (72 * COUNTS_PER_INCH));
-                vuMarkSeen = " Right";
             }
             else {
                 telemetry.addData("VuMark", vuMark);
