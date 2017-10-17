@@ -34,8 +34,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -51,14 +50,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Color Test", group="Autonomous")
+@Autonomous(name="Gyro Test", group="Autonomous")
 
-public class Color_Sensor_Test extends LinearOpMode {
+public class Auto_GyroTest extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
 
-    ColorSensor colorSensor;
+    GyroSensor gyro;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -69,8 +68,10 @@ public class Color_Sensor_Test extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
+        gyro = hardwareMap.gyroSensor.get("gyro");
+
+        gyro.calibrate();
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
@@ -84,26 +85,8 @@ public class Color_Sensor_Test extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Color", "Red: " + colorSensor.red());
-            telemetry.addData("Color", "Green: " + colorSensor.green());
-            telemetry.addData("Color", "Blue: " + colorSensor.blue());
+            telemetry.addData("Gyro Direction", "Gyro angle: " + gyro.getHeading());
             telemetry.update();
-
-            /*leftMotor.setPower(0.5);
-            rightMotor.setPower(0.5);
-
-            while (colorSensor.red() > 50) {
-                leftMotor.setPower(-0.5);
-                rightMotor.setPower(0.5);
-            }
-
-            while (colorSensor.blue() > 50){
-                leftMotor.setPower(0.5);
-                rightMotor.setPower(-0.5);
-            }
-
-            leftMotor.setPower(0);
-            rightMotor.setPower(0);*/
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
