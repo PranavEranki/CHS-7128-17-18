@@ -32,9 +32,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -50,58 +51,89 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Super Basic Tele-Op", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-public class Basic_Drive_TeleOp extends LinearOpMode {
+@Autonomous(name="Hard-Code Alignment Test", group="Autonomous")
+
+public class Auto_HardCode_Alignment_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftMotor = null;
-    private DcMotor rightMotor = null;
-    private double x = gamepad1.left_stick_x;
-    private double y = gamepad1.left_stick_y;
+
+    DcMotor leftMotor;
+    DcMotor rightMotor;
+
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 3.6 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
 
     @Override
-    public void runOpMode() {
-
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        leftMotor = hardwareMap.dcMotor.get("leftMotor");
+        rightMotor = hardwareMap.dcMotor.get("rightMotor");
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        leftMotor  = hardwareMap.dcMotor.get("left_drive");
-        rightMotor = hardwareMap.dcMotor.get("right_drive");
+
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
-        //leftMotor.setDirection(DcMotor.Direction.FORWARD);  // Set to REVERSE if using AndyMark motors
-        //rightMotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
+        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        // rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         // Wait for the game to start (driver presses PLAY)
+
+
+
+        //leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         waitForStart();
         runtime.reset();
 
+        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double x = gamepad1.left_stick_x;
-            double y = gamepad1.left_stick_y;
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("x = " + x, "y = " + y);
             telemetry.update();
 
-            // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            leftMotor.setPower(gamepad1.left_stick_y);
-            rightMotor.setPower(gamepad1.left_stick_y);
-            if(x > 0){
-                leftMotor.setPower(x);
-            }else{
-                rightMotor.setPower(x);
+
+            int targetPosition = (int) (12 * COUNTS_PER_INCH);
+
+
+
+
+            leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            leftMotor.setTargetPosition(targetPosition);
+            rightMotor.setTargetPosition(targetPosition);
+
+            leftMotor.setPower(0.5);
+            rightMotor.setPower(0.5);
+
+            while (leftMotor.isBusy() && rightMotor.isBusy()) {
+                telemetry.addData("Left Ticks Left", "Left Ticks Left: " + leftMotor.getTargetPosition());
+                telemetry.addData("Right Ticks Left", "Right Ticks Left: " + rightMotor.getTargetPosition());
+                telemetry.update();
             }
-            if(gamepad1.b){
-                leftMotor.setPower(0);
-                rightMotor.setPower(0);
-            }
+
+            leftMotor.setPower(0);
+            rightMotor.setPower(0);
+
+            leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 }

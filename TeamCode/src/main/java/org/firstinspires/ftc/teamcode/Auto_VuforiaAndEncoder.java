@@ -29,28 +29,28 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
+@Autonomous(name="Vuforia and Encoders", group ="Autonomous")
+public class Auto_VuforiaAndEncoder extends LinearOpMode {
+    DcMotor leftMotor;
+    DcMotor rightMotor;
 
-@Autonomous(name="Vuforia Test", group ="Autonomous")
-public class Auto_VuforiaTest extends LinearOpMode {
-
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 0.8 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 3.54331 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
     //public static final String TAG = "Vuforia VuMark Sample";
 
     /**
@@ -59,6 +59,30 @@ public class Auto_VuforiaTest extends LinearOpMode {
      */
     VuforiaLocalizer vuforia;
 
+
+    public void movement(int targetPosition) {
+
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftMotor.setTargetPosition(targetPosition);
+        rightMotor.setTargetPosition(targetPosition);
+
+        leftMotor.setPower(0.5);
+        rightMotor.setPower(0.5);
+
+        while (leftMotor.isBusy() && rightMotor.isBusy()) {
+            telemetry.addData("Left Ticks Left", "Left Ticks Left: " + leftMotor.getTargetPosition());
+            telemetry.addData("Right Ticks Left", "Right Ticks Left: " + rightMotor.getTargetPosition());
+            telemetry.update();
+        }
+
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
     @Override public void runOpMode() {
 
         /*
@@ -111,7 +135,18 @@ public class Auto_VuforiaTest extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
+
         relicTrackables.activate();
+
+        leftMotor = hardwareMap.dcMotor.get("leftMotor");
+        rightMotor = hardwareMap.dcMotor.get("rightMotor");
+
+        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeIsActive()) {
 
@@ -121,16 +156,27 @@ public class Auto_VuforiaTest extends LinearOpMode {
              * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
+
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
 
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
                 telemetry.addData("VuMark", "%s visible", vuMark);
             }
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                movement((int) (24 * COUNTS_PER_INCH));
+            }
+            else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                movement((int) (48* COUNTS_PER_INCH));
+            }
+            else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                movement((int) (72 * COUNTS_PER_INCH));
+            }
             else {
-                telemetry.addData("VuMark", "not visible");
+                telemetry.addData("VuMark", vuMark);
             }
 
             telemetry.update();
