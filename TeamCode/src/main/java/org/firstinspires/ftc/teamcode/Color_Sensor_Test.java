@@ -84,11 +84,15 @@ public class Color_Sensor_Test extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-
+            telemetry.addData("Color", "Red: " + colorSensor.red());
+            telemetry.addData("Color", "Green: " + colorSensor.green());
+            telemetry.addData("Color", "Blue: " + colorSensor.blue());
             if(colorSensor.red() > 100 && colorSensor.red() < 200 && colorSensor.blue() > 100 && colorSensor.blue() < 200 && colorSensor.green() > 100 && colorSensor.green() < 200 ){
-                telemetry.addData("Color", "Red: " + colorSensor.red());
-                telemetry.addData("Color", "Green: " + colorSensor.green());
-                telemetry.addData("Color", "Blue: " + colorSensor.blue());
+                telemetry.addData("Color", "Color: Brown");
+            }else if(colorSensor.red() > 200 && colorSensor.red() < 300 && colorSensor.blue() > 200 && colorSensor.blue() < 300 && colorSensor.green() > 200 && colorSensor.green() < 300){
+                telemetry.addData("Color", "Color: Gray");
+            }else{
+                telemetry.addData("Color", "Color: None");
             }
             telemetry.update();
 
