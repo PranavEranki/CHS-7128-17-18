@@ -70,6 +70,7 @@ public class Color_Sensor_Test extends LinearOpMode {
          * step (using the FTC Robot Controller app on the phone).
          */
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
+        colorSensor.enableLed(true);
 
 
         // eg: Set the drive motor directions:
