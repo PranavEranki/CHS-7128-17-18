@@ -109,7 +109,7 @@ public class GyroAndEncoder extends LinearOpMode {
         }
     }
     public void turnTo(double degrees){
-        int turnBy = 1;
+        int turnBy = -1;                 //turns clockwise
 
         if(degrees < gyro.getHeading()){
             turnBy *= -1;
