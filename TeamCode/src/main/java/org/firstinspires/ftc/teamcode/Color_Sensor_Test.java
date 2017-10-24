@@ -81,6 +81,7 @@ public class Color_Sensor_Test extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        colorSensor.enableLed(false);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
