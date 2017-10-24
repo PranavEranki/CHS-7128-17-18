@@ -34,8 +34,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -51,14 +50,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Color Test", group="Autonomous")
+@Autonomous(name="Servo Test", group="Autonomous")
 
-public class Color_Sensor_Test extends LinearOpMode {
+public class Servo_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
 
-    ColorSensor colorSensor;
+    Servo servo;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -69,52 +68,39 @@ public class Color_Sensor_Test extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        colorSensor = hardwareMap.colorSensor.get("colorSensor");
+
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
         // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         // rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
+        servo = hardwareMap.servo.get("servo");
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        colorSensor.enableLed(false);
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Color", "Red: " + colorSensor.red());
-            telemetry.addData("Color", "Green: " + colorSensor.green());
-            telemetry.addData("Color", "Blue: " + colorSensor.blue());
-            if(colorSensor.red() > 100 && colorSensor.red() < 200 && colorSensor.blue() > 100 && colorSensor.blue() < 200 && colorSensor.green() > 100 && colorSensor.green() < 200 ){
-                telemetry.addData("Color", "Color: Brown");
-            }else if(colorSensor.red() > 200 && colorSensor.red() < 300 && colorSensor.blue() > 200 && colorSensor.blue() < 300 && colorSensor.green() > 200 && colorSensor.green() < 300){
-                telemetry.addData("Color", "Color: Gray");
-            }else{
-                telemetry.addData("Color", "Color: None");
-            }
-            telemetry.update();
+        telemetry.addData("Position", "Position: " + servo.getPosition());
+        telemetry.update();
+        servo.setPosition(1);
+        telemetry.addData("Position", "Position: " + servo.getPosition());
+        telemetry.update();
+        wait(2.0);
+        servo.setPosition(0);
+        telemetry.addData("Position", "Position: " + servo.getPosition());
+        telemetry.update();
+        wait(2.0);
+        servo.setPosition(0.5);
+        telemetry.addData("Position", "Position: " + servo.getPosition());
+        telemetry.update();
+        wait(2.0);
 
-            /*leftMotor.setPower(0.5);
-            rightMotor.setPower(0.5);
+    }
 
-            while (colorSensor.red() > 50) {
-                leftMotor.setPower(-0.5);
-                rightMotor.setPower(0.5);
-            }
-
-            while (colorSensor.blue() > 50){
-                leftMotor.setPower(0.5);
-                rightMotor.setPower(-0.5);
-            }
-
-            leftMotor.setPower(0);
-            rightMotor.setPower(0);*/
-
-            // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            // leftMotor.setPower(-gamepad1.left_stick_y);
-            // rightMotor.setPower(-gamepad1.right_stick_y);
-        }
+    public void wait(double sec) {
+        double time = this.time;
+        while (opModeIsActive() && this.time - time < sec) {}
     }
 }
