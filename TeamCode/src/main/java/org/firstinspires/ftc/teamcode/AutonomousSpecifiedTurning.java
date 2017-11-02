@@ -41,7 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
-@Autonomous(name="Vuforia and Encoders", group ="Autonomous")
+@Autonomous(name="Autonomous Specified Turning", group ="Autonomous")
 public class AutonomousSpecifiedTurning extends LinearOpMode {
     DcMotor leftMotor;
     DcMotor rightMotor;

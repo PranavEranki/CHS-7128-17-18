@@ -64,13 +64,14 @@ public class Color_Sensor_Test extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        // variable = conidition ? (if condition true, return this) : else, (return this);
+        
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        colorSensor.enableLed(true);
+        colorSensor.enableLed(false);
 
 
         // eg: Set the drive motor directions:
