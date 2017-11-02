@@ -91,7 +91,7 @@ public class Color_Sensor_Test extends LinearOpMode {
             telemetry.addData("Color", "Green: " + colorSensor.green());
             telemetry.addData("Color", "Blue: " + colorSensor.blue());
             /*
-            if(colorSensor.red() > 0 && colorSensor.red() < 100 && colorSensor.blue() > 0 && colorSensor.blue() < 100 && colorSensor.green() > 0 && colorSensor.green() < 100 ){
+            if(colorSensor.red() > 0 && colorSensor.rd() < 100 && colorSensor.blue() > 0 && colorSensor.blue() < 100 && colorSensor.green() > 0 && colorSensor.green() < 100 ){
                 telemetry.addData("Color", "Color: Brown");
             }else if(colorSensor.red() > 100 && colorSensor.red() < 200 && colorSensor.blue() > 90 && colorSensor.blue() < 200 && colorSensor.green() > 100 && colorSensor.green() < 200){
                 telemetry.addData("Color", "Color: Gray");
@@ -105,8 +105,10 @@ public class Color_Sensor_Test extends LinearOpMode {
                 } else if (colorSensor.blue() > colorSensor.red() && colorSensor.blue() > colorSensor.green()) {
                     telemetry.addData("Color", "Color: Blue");
                 } else {
-                    telemetry.addData("Color", "Color: None (or Green)");
+                    telemetry.addData("Color", "Color: None");
                 }
+            } else {
+                telemetry.addData("Color", "Color: Color values lower than 30");
             }
             telemetry.update();
 
