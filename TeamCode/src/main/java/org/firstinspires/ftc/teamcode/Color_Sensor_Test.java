@@ -99,18 +99,23 @@ public class Color_Sensor_Test extends LinearOpMode {
                 telemetry.addData("Color", "Color: None");
             }
             */
-            if(colorSensor.red() > 30 || colorSensor.blue() > 30 || colorSensor.green() > 30) {
-                if (colorSensor.red() > colorSensor.blue() && colorSensor.red() > colorSensor.green()) {
+
+
+
+                if (colorSensor.red() > colorSensor.blue()) {
                     telemetry.addData("Color", "Color: Red");
-                } else if (colorSensor.blue() > colorSensor.red() && colorSensor.blue() > colorSensor.green()) {
+                } else if (colorSensor.blue() > colorSensor.red()) {
                     telemetry.addData("Color", "Color: Blue");
                 } else {
-                    telemetry.addData("Color", "Color: None");
+                    telemetry.addData("Color", "Color: Not red/blue jewel");
                 }
-            } else {
-                telemetry.addData("Color", "Color: Color values lower than 30");
-            }
+
+
+
             telemetry.update();
+
+
+
 
             /*leftMotor.setPower(0.5);
             rightMotor.setPower(0.5);
