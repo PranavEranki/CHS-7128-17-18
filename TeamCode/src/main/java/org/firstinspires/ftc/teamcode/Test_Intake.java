@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Intake Test", group="Test Opmode")
-public class IntakeTest  extends OpMode{
+public class Test_Intake extends OpMode{
     DcMotor leftMotor;
     DcMotor rightMotor;
 

@@ -41,8 +41,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
-@Autonomous(name="Vuforia and Encoders", group ="Autonomous")
-public class Auto_VuforiaAndEncoder extends LinearOpMode {
+@Autonomous(name="Vuforia Encoder Test", group ="Autonomous")
+public class Vuforia_Encoder_Test extends LinearOpMode {
     DcMotor leftMotor;
     DcMotor rightMotor;
 

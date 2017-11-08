@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Servo Test", group="Autonomous")
 
-public class Servo_Test extends LinearOpMode {
+public class Test_Servo extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();

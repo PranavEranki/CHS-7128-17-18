@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Color Test", group="Autonomous")
 
-public class Color_Sensor_Test extends LinearOpMode {
+public class Test_ColorSensor extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();

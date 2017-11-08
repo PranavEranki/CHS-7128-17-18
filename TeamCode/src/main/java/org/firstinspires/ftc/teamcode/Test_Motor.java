@@ -51,9 +51,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="7128 First Auto", group="Autonomous")
+@Autonomous(name="Motor Test", group="Autonomous")
 
-public class Auto_FirstAutonomous extends LinearOpMode {
+public class Test_Motor extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();

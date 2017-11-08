@@ -35,11 +35,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -54,31 +59,29 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Gyro and Encoder Test", group="Autonomous")
+@Autonomous(name="Autonomous No Jewel No Mech", group="Autonomous")
 
-public class GyroAndEncoder extends LinearOpMode {
+public class Auto_NoJewel_NoMech extends LinearOpMode {
+
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 16.0/27.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 3.54331 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+
+    static final double     HEADING_THRESHOLD       = 1;
+    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
+
+    static final double     DRIVE_SPEED             = 0;
+    static final double     TURN_SPEED              = 0.1;
+
+    /* Declare OpMode members. */
+    private ElapsedTime runtime = new ElapsedTime();
+    VuforiaLocalizer vuforia;
 
     DcMotor leftMotor;
     DcMotor rightMotor;
-
-    static final double COUNTS_PER_MOTOR_REV = 1440;        // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 1.0;          // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 3.54331;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    //double degrees = 90;
-
-    // These constants define the desired driving/control characteristics
-    // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
-    static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
-
-    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
-    
-    /* Declare OpMode members. */
-    private ElapsedTime runtime = new ElapsedTime();
-
     GyroSensor gyro;
 
     @Override
@@ -91,60 +94,124 @@ public class GyroAndEncoder extends LinearOpMode {
          * step (using the FTC Robot Controller app on the phone).
          */
 
-        gyro = hardwareMap.gyroSensor.get("gyro");
-
         leftMotor = hardwareMap.dcMotor.get("leftMotor");
         rightMotor = hardwareMap.dcMotor.get("rightMotor");
+        gyro = hardwareMap.gyroSensor.get("gyro");
 
-        gyro.calibrate();
+        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "AZHAQRH/////AAAAGQ6K1+aY90TlgdxPiNC5zmmAVabLoenLsZ227ubCjDrC6b3cQtOUwnrB3ZNQWwDB6eHbzv8w67EJBp6R2AyPHf5X0gErSGY5HH4PR+IX4Ls2HTgft7F3A8SAUII/q7A70faLEz2U/seCvob/m53IwouLLa86D6WaMOdNi0lziagI1gS/cANAHhhb3fesRCKYxJvMONUyfMf6FXva4Mt7FIr6yy7qfY7bbkkcYMRSN9yPgHsdN6SxXkmKEZUs86sjl7yEYgefFyogwtbPOIvEvhn+8qh1HuliFc0b2mGhakbaXqYgzTpSmqTppmetn1LyK8U1zDnwaO5xftJ/ea6iKGhZQ6AIA3SM2kb57O/Za5za";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
-        //leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        //rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        // rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         // Wait for the game to start (driver presses PLAY)
+
+        telemetry.addData("Status", "Wait for gyro to initialize");
+        telemetry.update();
+
+
+
+        telemetry.addData("Status", "Press play to begin");
+        telemetry.update();
+
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Gyro Direction", "Gyro angle: " + gyro.getHeading());
-            telemetry.update();
-            turnTo(90, 0.2);
-        }
-    }
-    public void turnTo(double degrees, double speed){
+        relicTrackables.activate();
 
-        if (degrees == 0) return;
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.update();
 
-        int multiplier = -1;                // turns clockwise
+        int numLeft = 0;
+        int numCenter = 0;
+        int numRight = 0;
 
-        if(degrees < 0){
-            multiplier = 1;
-        }
+        /*for (int i = 0; i < 20 && opModeIsActive(); i++) {
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
-        double turnBy = multiplier * (Math.abs(speed));
-
-        double currHeading = gyro.getHeading();     // current heading
-        boolean condition;
-        do {
-            if (multiplier < 0) {
-                condition = gyro.getHeading() < (currHeading + degrees);
-            } else {
-                condition = gyro.getHeading() > (currHeading + degrees);
+                telemetry.addData("VuMark", "%s visible", vuMark);
+                if (vuMark == RelicRecoveryVuMark.LEFT) numLeft++;
+                else if (vuMark == RelicRecoveryVuMark.CENTER) numCenter++;
+                else numRight++;
+            }
+            else {
+                telemetry.addData("VuMark", "not visible");
+                i = -1;
             }
 
-            leftMotor.setPower(-turnBy);
-            rightMotor.setPower(turnBy);
-
-            telemetry.addData("Gyro Direction", "Gyro angle: " + gyro.getHeading());
             telemetry.update();
-        } while (condition && opModeIsActive());
+
+        }*/
+
+        telemetry.addData("numLeft", numLeft);
+        telemetry.addData("numCenter", numCenter);
+        telemetry.addData("numRight", numRight);
+        telemetry.update();
+
+        gyroDrive(DRIVE_SPEED, 24, 0);
+
+        gyroTurn(TURN_SPEED, 90);
+
+        gyroDrive(DRIVE_SPEED, getCryptoboxDistance(numLeft, numCenter, numRight), 90);
+
+        gyroTurn(TURN_SPEED, 0);
+
+        gyroDrive(DRIVE_SPEED, 12, 0);
+
+    }
+
+    public double getCryptoboxDistance(int left, int center, int right) {
+
+        int max = Math.max(Math.max(left, center), right);
+
+        RelicRecoveryVuMark mark;
+        if (max == left) mark = RelicRecoveryVuMark.LEFT;
+        else if (max == center) mark = RelicRecoveryVuMark.CENTER;
+        else mark = RelicRecoveryVuMark.RIGHT;
+
+        double dist = 0.555;
+        double width = 7.63;
+        if (mark == RelicRecoveryVuMark.RIGHT) return dist + (width * 0.5);
+        if (mark == RelicRecoveryVuMark.CENTER) return dist + (width * 1.5);
+        return dist + (width * 2.5);
+    }
+
+    public void movement(int targetPosition) {
+
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftMotor.setTargetPosition(targetPosition * (int) COUNTS_PER_INCH);
+        rightMotor.setTargetPosition(targetPosition * (int) COUNTS_PER_INCH);
+
+        leftMotor.setPower(0.5);
+        rightMotor.setPower(0.5);
+
+        while (leftMotor.isBusy() && rightMotor.isBusy()) {
+            telemetry.addData("Left Ticks Left", "Left Ticks Left: " + leftMotor.getTargetPosition());
+            telemetry.addData("Right Ticks Left", "Right Ticks Left: " + rightMotor.getTargetPosition());
+            telemetry.update();
+        }
 
         leftMotor.setPower(0);
         rightMotor.setPower(0);
+
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**
@@ -237,17 +304,6 @@ public class GyroAndEncoder extends LinearOpMode {
         }
     }
 
-    /**
-     *  Method to spin on central axis to point in a new direction.
-     *  Move will stop if either of these conditions occur:
-     *  1) Move gets to the heading (angle)
-     *  2) Driver stops the opmode running.
-     *
-     * @param speed Desired speed of turn.
-     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                   If a relative angle is required, add/subtract from current heading.
-     */
     public void gyroTurn (  double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
@@ -255,33 +311,6 @@ public class GyroAndEncoder extends LinearOpMode {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
-    }
-
-    /**
-     *  Method to obtain & hold a heading for a finite amount of time
-     *  Move will stop once the requested time has elapsed
-     *
-     * @param speed      Desired speed of turn.
-     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                   If a relative angle is required, add/subtract from current heading.
-     * @param holdTime   Length of time (in seconds) to hold the specified heading.
-     */
-    public void gyroHold( double speed, double angle, double holdTime) {
-
-        ElapsedTime holdTimer = new ElapsedTime();
-
-        // keep looping while we have time remaining.
-        holdTimer.reset();
-        while (opModeIsActive() && (holdTimer.time() < holdTime)) {
-            // Update telemetry & Allow time for other processes to run.
-            onHeading(speed, angle, P_TURN_COEFF);
-            telemetry.update();
-        }
-
-        // Stop all motion;
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
     }
 
     /**
