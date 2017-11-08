@@ -53,9 +53,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Gyro and Encoderx", group="Autonomous")
+@Autonomous(name="Gyro and Encoder Test 2", group="Autonomous")
 
-public class GyroAndEncoder extends LinearOpMode {
+public class Test_Gyro_Encoder_2 extends LinearOpMode {
 
     DcMotor leftMotor;
     DcMotor rightMotor;
