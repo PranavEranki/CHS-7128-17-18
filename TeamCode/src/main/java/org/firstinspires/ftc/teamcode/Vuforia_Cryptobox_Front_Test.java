@@ -80,7 +80,7 @@ import java.util.List;
  */
 
 @Autonomous(name="Vuforia Front Cryptovox", group ="Concept")
-public class VuforiaCryptoboxFront extends LinearOpMode {
+public class Vuforia_Cryptobox_Front_Test extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
 
