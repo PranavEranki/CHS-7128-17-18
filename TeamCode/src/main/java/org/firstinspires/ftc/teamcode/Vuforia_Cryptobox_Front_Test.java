@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -79,6 +80,7 @@ import java.util.List;
  * is explained below.
  */
 
+@Disabled
 @Autonomous(name="Vuforia Front Cryptovox", group ="Concept")
 public class Vuforia_Cryptobox_Front_Test extends LinearOpMode {
 

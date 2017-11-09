@@ -46,8 +46,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-
-
+@Disabled
 @Autonomous(name="Vuforia Test", group ="Autonomous")
 public class Vuforia_Initial_Test extends LinearOpMode {
 
