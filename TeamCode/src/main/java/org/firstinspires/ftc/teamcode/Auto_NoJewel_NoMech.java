@@ -73,7 +73,8 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
 
-    static final double     DRIVE_SPEED             = 0;
+    static final double     DRIVE_SPEED             = 0.4;
+    static final double     SLOW_DRIVE_SPEED        = 0.1;
     static final double     TURN_SPEED              = 0.1;
 
     /* Declare OpMode members. */
@@ -99,6 +100,8 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
         gyro = hardwareMap.gyroSensor.get("gyro");
 
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        gyro.calibrate();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -139,7 +142,7 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
         int numCenter = 0;
         int numRight = 0;
 
-        /*for (int i = 0; i < 20 && opModeIsActive(); i++) {
+        for (int i = 0; i < 20 && opModeIsActive(); i++) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
@@ -155,7 +158,7 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
 
             telemetry.update();
 
-        }*/
+        }
 
         telemetry.addData("numLeft", numLeft);
         telemetry.addData("numCenter", numCenter);
@@ -166,11 +169,17 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
 
         gyroTurn(TURN_SPEED, 90);
 
-        gyroDrive(DRIVE_SPEED, getCryptoboxDistance(numLeft, numCenter, numRight), 90);
+        /*gyro.calibrate();
+        while (gyro.isCalibrating() && opModeIsActive()) {}*/
+
+        gyroDrive(SLOW_DRIVE_SPEED, getCryptoboxDistance(numLeft, numCenter, numRight), 90);
 
         gyroTurn(TURN_SPEED, 0);
 
-        gyroDrive(DRIVE_SPEED, 12, 0);
+        /*gyro.calibrate();
+        while (gyro.isCalibrating() && opModeIsActive()) {}*/
+
+        gyroDrive(SLOW_DRIVE_SPEED, 12, 0);
 
     }
 
@@ -188,30 +197,6 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
         if (mark == RelicRecoveryVuMark.RIGHT) return dist + (width * 0.5);
         if (mark == RelicRecoveryVuMark.CENTER) return dist + (width * 1.5);
         return dist + (width * 2.5);
-    }
-
-    public void movement(int targetPosition) {
-
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftMotor.setTargetPosition(targetPosition * (int) COUNTS_PER_INCH);
-        rightMotor.setTargetPosition(targetPosition * (int) COUNTS_PER_INCH);
-
-        leftMotor.setPower(0.5);
-        rightMotor.setPower(0.5);
-
-        while (leftMotor.isBusy() && rightMotor.isBusy()) {
-            telemetry.addData("Left Ticks Left", "Left Ticks Left: " + leftMotor.getTargetPosition());
-            telemetry.addData("Right Ticks Left", "Right Ticks Left: " + rightMotor.getTargetPosition());
-            telemetry.update();
-        }
-
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
-
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**
@@ -291,6 +276,7 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
                 telemetry.addData("Actual",  "%7d:%7d",      leftMotor.getCurrentPosition(),
                         rightMotor.getCurrentPosition());
                 telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                telemetry.addData("Angle", "%d", gyro.getHeading());
                 telemetry.update();
             }
 
