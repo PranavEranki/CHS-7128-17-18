@@ -48,7 +48,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Disabled
 @Autonomous(name="Vuforia Cryptobox Test", group ="Autonomous")
 public class Vuforia_Cryptobox_Test extends LinearOpMode {
 
