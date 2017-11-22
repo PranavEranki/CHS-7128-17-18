@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Color Test", group="Autonomous")
 
-public class Test_ColorSensor extends LinearOpMode {
+public class TestColorSensor extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -64,14 +64,15 @@ public class Test_ColorSensor extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        // variable = conidition ? (if condition true, return this) : else, (return this);
+
+        // variable = condition ? (if condition true, return this) : else, (return this);
         
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
+
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        colorSensor.enableLed(false);
 
 
         // eg: Set the drive motor directions:
@@ -82,7 +83,8 @@ public class Test_ColorSensor extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        colorSensor.enableLed(false);
+
+        colorSensor.enableLed(false);           //does nothing for some reason
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -90,32 +92,34 @@ public class Test_ColorSensor extends LinearOpMode {
             telemetry.addData("Color", "Red: " + colorSensor.red());
             telemetry.addData("Color", "Green: " + colorSensor.green());
             telemetry.addData("Color", "Blue: " + colorSensor.blue());
-            /*
-            if(colorSensor.red() > 0 && colorSensor.rd() < 100 && colorSensor.blue() > 0 && colorSensor.blue() < 100 && colorSensor.green() > 0 && colorSensor.green() < 100 ){
+
+            //enough = more than 0 and less than 100
+            boolean enoughRed = colorSensor.red() > 0 && colorSensor.red() < 100;
+            boolean enoughBlue = colorSensor.blue() > 0 && colorSensor.blue() < 100;
+            boolean enoughGreen = colorSensor.green() > 0 && colorSensor.green() < 100;
+
+            //lot =
+            boolean lotOfRed = colorSensor.red() > 100 && colorSensor.red() < 200;
+            boolean lotOfBlue = colorSensor.blue() > 100 && colorSensor.blue() < 200;
+            boolean lotOfGreen = colorSensor.green() > 100 && colorSensor.green() < 200;
+
+            //check for brown or gray
+            if(enoughRed && enoughBlue &&  enoughGreen){
                 telemetry.addData("Color", "Color: Brown");
-            }else if(colorSensor.red() > 100 && colorSensor.red() < 200 && colorSensor.blue() > 90 && colorSensor.blue() < 200 && colorSensor.green() > 100 && colorSensor.green() < 200){
+            }else if(lotOfRed && lotOfBlue && lotOfGreen){
                 telemetry.addData("Color", "Color: Gray");
             }else{
-                telemetry.addData("Color", "Color: None");
-            }
-            */
-
-
-
-                if (colorSensor.red() > colorSensor.blue()) {
-                    telemetry.addData("Color", "Color: Red");
-                } else if (colorSensor.blue() > colorSensor.red()) {
+                //check for blue or red
+                if(lotOfBlue && !lotOfRed){
                     telemetry.addData("Color", "Color: Blue");
-                } else {
-                    telemetry.addData("Color", "Color: Not red/blue jewel");
+                }else if(lotOfRed && lotOfBlue){
+                    telemetry.addData("Color", "Color: Red");
+                }else{
+                    telemetry.addData("Color", "Color: N.A.");
                 }
-
-
+            }
 
             telemetry.update();
-
-
-
 
             /*leftMotor.setPower(0.5);
             rightMotor.setPower(0.5);
