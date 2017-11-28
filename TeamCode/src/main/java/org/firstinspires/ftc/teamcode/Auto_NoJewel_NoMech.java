@@ -179,7 +179,7 @@ public class Auto_NoJewel_NoMech extends LinearOpMode {
         /*gyro.calibrate();
         while (gyro.isCalibrating() && opModeIsActive()) {}*/
 
-        gyroDrive(SLOW_DRIVE_SPEED, 12, 0);
+        gyroDrive(SLOW_DRIVE_SPEED, 8, 0);
 
     }
 
