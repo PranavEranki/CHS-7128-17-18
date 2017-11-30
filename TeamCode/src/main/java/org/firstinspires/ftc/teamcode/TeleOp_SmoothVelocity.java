@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -51,15 +52,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Intake Test", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="Smooth Velocity Tele-Op", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 @Disabled
-public class Test_Intake extends LinearOpMode {
+public class TeleOp_SmoothVelocity extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    DcMotor leftMotor;
-    DcMotor rightMotor;
-    DcMotor intakeMotor;
+    DcMotor leftMotor = null;
+    DcMotor rightMotor = null;
+
+    double leftSpeed = 0;
+    double rightSpeed = 0;
+
+    double increasingVelocityDiff = 0.02;
+    double decreasingVelocityDiff = 0.05;
+
+    boolean turning = false;
 
     @Override
     public void runOpMode() {
@@ -70,9 +78,8 @@ public class Test_Intake extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        leftMotor  = hardwareMap.dcMotor.get("leftMotor");
-        rightMotor = hardwareMap.dcMotor.get("rightMotor");
-        intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
+        leftMotor  = hardwareMap.dcMotor.get("left_drive");
+        rightMotor = hardwareMap.dcMotor.get("right_drive");
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
@@ -88,11 +95,41 @@ public class Test_Intake extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
+            if (gamepad1.left_stick_y < 0 && gamepad1.right_stick_y < 0) { // forwards
+                leftSpeed += increasingVelocityDiff;
+                rightSpeed += increasingVelocityDiff;
+                turning = false;
+            } else if (gamepad1.left_stick_y > 0 && gamepad1.right_stick_y > 0) { // backwards
+                leftSpeed -= increasingVelocityDiff;
+                rightSpeed -= increasingVelocityDiff;
+                turning = false;
+            } else if (gamepad1.left_stick_y > 0 && gamepad1.right_stick_y < 0) { // turn left
+                leftSpeed -= increasingVelocityDiff;
+                rightSpeed += increasingVelocityDiff;
+                turning = true;
+            } else if (gamepad1.left_stick_y < 0 && gamepad1.right_stick_y > 0) { // turn right
+                leftSpeed += increasingVelocityDiff;
+                rightSpeed -= increasingVelocityDiff;
+                turning = true;
+            } else {
+                if (leftSpeed < 0) leftSpeed += decreasingVelocityDiff;
+                else leftSpeed -= decreasingVelocityDiff;
 
-            leftMotor.setPower(-0.5 * gamepad1.left_stick_y);
-            rightMotor.setPower(-0.5 * gamepad1.right_stick_y);
+                if (rightSpeed < 0) rightSpeed += decreasingVelocityDiff;
+                else rightSpeed -= decreasingVelocityDiff;
+            }
 
-            intakeMotor.setPower(-0.5 * gamepad1.right_trigger);
+            double min;
+            double max;
+            if (turning) {
+                min = -0.3;
+                max = 0.3;
+            } else {
+                min = -0.6;
+                max = 0.6;
+            }
+            leftMotor.setPower(Range.clip(leftSpeed, min, max));
+            rightMotor.setPower(Range.clip(rightSpeed, min, max));
         }
     }
 }
