@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -52,7 +53,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="Intake Test", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-@Disabled
 public class Test_Intake extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -74,6 +74,8 @@ public class Test_Intake extends LinearOpMode {
         rightMotor = hardwareMap.dcMotor.get("rightMotor");
         intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
 
+        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
         // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
@@ -92,7 +94,13 @@ public class Test_Intake extends LinearOpMode {
             leftMotor.setPower(-0.5 * gamepad1.left_stick_y);
             rightMotor.setPower(-0.5 * gamepad1.right_stick_y);
 
-            intakeMotor.setPower(-0.5 * gamepad1.right_trigger);
+            if (gamepad1.right_trigger > 0) {
+                intakeMotor.setPower(-0.5);
+            } else if (gamepad1.left_trigger > 0) {
+                intakeMotor.setPower(0.5);
+            } else {
+                intakeMotor.setPower(0);
+            }
         }
     }
 }

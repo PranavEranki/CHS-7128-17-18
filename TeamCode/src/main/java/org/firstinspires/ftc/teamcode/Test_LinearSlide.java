@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -52,31 +54,18 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Smooth Velocity Tele-Op", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-public class TeleOp_SmoothVelocity extends LinearOpMode {
-
-    final double rotationsUpOneLevel = 0.5;
-    final double rotationsDownOneLevel = -rotationsUpOneLevel;
-    int targetliftPosition = 1;
-    int currentLiftPosition = 1;
+@TeleOp(name="Template Tele-Op", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+public class Test_LinearSlide extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
     DcMotor leftMotor = null;
     DcMotor rightMotor = null;
-
-    DcMotor intakeMotor = null;
     DcMotor liftMotor = null;
+    Servo leftClamp = null;
+    Servo rightClamp = null;
 
-    double leftSpeed = 0;
-    double rightSpeed = 0;
-
-    double multiplier = 0.5;
-
-    double increasingVelocityDiff = 0.02;
-    double decreasingVelocityDiff = 0.05;
-
-    boolean turning = false;
+    double speed = 0.5;
 
     @Override
     public void runOpMode() {
@@ -87,10 +76,17 @@ public class TeleOp_SmoothVelocity extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        leftMotor = hardwareMap.dcMotor.get("leftMotor");
+
+
+
+        leftMotor  = hardwareMap.dcMotor.get("leftMotor");
         rightMotor = hardwareMap.dcMotor.get("rightMotor");
-        intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
+        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         liftMotor = hardwareMap.dcMotor.get("liftMotor");
+
+        leftClamp = hardwareMap.servo.get("leftClamp");
+        rightClamp = hardwareMap.servo.get("rightClamp");
 
         // eg: Set the drive motor directions:
         // "Reverse" the motor that runs backwards when connected directly to the battery
@@ -103,70 +99,40 @@ public class TeleOp_SmoothVelocity extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            /**
-             * Driving
-             */
-
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "Left Clamp Position: " + leftClamp.getPosition());
+            telemetry.addData("Status", "Right Clamp Position: " + rightClamp.getPosition());
+            telemetry.addData("Status", "Speed: " + speed);
             telemetry.update();
 
-            if (gamepad1.left_stick_y < 0 && gamepad1.right_stick_y < 0) { // forwards
-                leftSpeed += increasingVelocityDiff;
-                rightSpeed += increasingVelocityDiff;
-                turning = false;
-            } else if (gamepad1.left_stick_y > 0 && gamepad1.right_stick_y > 0) { // backwards
-                leftSpeed -= increasingVelocityDiff;
-                rightSpeed -= increasingVelocityDiff;
-                turning = false;
-            } else if (gamepad1.left_stick_y > 0 && gamepad1.right_stick_y < 0) { // turn left
-                leftSpeed -= increasingVelocityDiff;
-                rightSpeed += increasingVelocityDiff;
-                turning = true;
-            } else if (gamepad1.left_stick_y < 0 && gamepad1.right_stick_y > 0) { // turn right
-                leftSpeed += increasingVelocityDiff;
-                rightSpeed -= increasingVelocityDiff;
-                turning = true;
-            } else {
-                if (leftSpeed < 0) leftSpeed += decreasingVelocityDiff;
-                else leftSpeed -= decreasingVelocityDiff;
-
-                if (rightSpeed < 0) rightSpeed += decreasingVelocityDiff;
-                else rightSpeed -= decreasingVelocityDiff;
+            if (gamepad1.right_bumper) {
+                while (gamepad1.right_bumper) {}
+                speed += 0.1;
+            }
+            if (gamepad1.left_bumper) {
+                while (gamepad1.left_bumper) {}
+                speed -= 0.1;
             }
 
-            double min;
-            double max;
-            if (turning) {
-                min = -0.3;
-                max = 0.3;
+
+            // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
+            leftMotor.setPower(-0.5 * gamepad1.left_stick_y);
+            rightMotor.setPower(-0.5 * gamepad1.right_stick_y);
+            if (gamepad1.y) {
+                liftMotor.setPower(speed);
+            } else if (gamepad1.a) {
+                liftMotor.setPower(-speed);
             } else {
-                min = -0.6;
-                max = 0.6;
+                liftMotor.setPower(0);
             }
-            leftMotor.setPower(Range.clip(leftSpeed, min, max));
-            rightMotor.setPower(Range.clip(rightSpeed, min, max));
 
-            /**
-             * Extra stuff
-             */
-
-            if (gamepad2.right_trigger > 0)
-                intakeMotor.setPower(-multiplier * gamepad2.right_trigger);
-            else if (gamepad2.left_trigger > 0)
-                intakeMotor.setPower(multiplier * gamepad2.left_trigger);
-            //intakeMotor.setPower(-multiplier * gamepad2.right_trigger + multiplier * gamepad2.left_trigger);
-
-            if (gamepad2.y) targetliftPosition = 1;
-            if (gamepad2.b) targetliftPosition = 2;
-            if (gamepad2.a) targetliftPosition = 3;
-            if (gamepad2.x) targetliftPosition = 4;
-
-            moveToPosition();
+            if (gamepad1.right_trigger > 0) {
+                leftClamp.setPosition(0);
+                rightClamp.setPosition(1);
+            } else if (gamepad1.left_trigger > 0) {
+                leftClamp.setPosition(0.62);
+                rightClamp.setPosition(0.38);
+            }
         }
-    }
-
-    public void moveToPosition() {
-
     }
 }
