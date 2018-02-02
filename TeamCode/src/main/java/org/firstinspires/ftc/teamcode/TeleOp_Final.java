@@ -157,8 +157,8 @@ public class TeleOp_Final extends LinearOpMode {
 
     private void closeServo() {
         open = false;
-        leftClamp.setPosition(0.75);
-        rightClamp.setPosition(0.4);
+        leftClamp.setPosition(0.6);
+        rightClamp.setPosition(0.3);
     }
 
     private void openServo() {
